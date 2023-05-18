@@ -1,16 +1,101 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <title>Random User</title>
+  <style>
+    /* Add your custom styles here */
+  </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div>
+    <h1 id="name"></h1>
+    <img id="photo" src="" alt="User Photo"><br><br>
+    <button data-attr="age">Age</button>
+    <button data-attr="email">Email</button>
+    <button data-attr="phone">Phone</button>
+  </div>
 
+  <div>
+    <h2>Additional Info</h2>
+    <p id="additional-info"></p>
+  </div>
+
+  <button id="getUser">Get User</button>
+
+  <script>
+    // Select elements
+    const nameElement = document.getElementById('name');
+    const photoElement = document.getElementById('photo');
+    const ageButton = document.querySelector('button[data-attr="age"]');
+    const emailButton = document.querySelector('button[data-attr="email"]');
+    const phoneButton = document.querySelector('button[data-attr="phone"]');
+    const additionalInfoElement = document.getElementById('additional-info');
+    const getUserButton = document.getElementById('getUser');
+
+    // Function to display additional info
+    function displayAdditionalInfo(info) {
+      additionalInfoElement.textContent = info;
+    }
+
+    // Function to handle button clicks
+    function handleButtonClick(event) {
+      const attribute = event.target.getAttribute('data-attr');
+
+      // Clear previous additional info
+      additionalInfoElement.textContent = '';
+
+      // Check which button was clicked
+      switch (attribute) {
+        case 'age':
+          displayAdditionalInfo(userInfo.age);
+          break;
+        case 'email':
+          displayAdditionalInfo(userInfo.email);
+          break;
+        case 'phone':
+          displayAdditionalInfo(userInfo.phone);
+          break;
+        default:
+          break;
+      }
+    }
+
+    // Attach event listeners to buttons
+    ageButton.addEventListener('click', handleButtonClick);
+    emailButton.addEventListener('click', handleButtonClick);
+    phoneButton.addEventListener('click', handleButtonClick);
+
+    // Fetch random user data from API and update DOM
+    function fetchRandomUser() {
+      fetch('https://randomuser.me/api/')
+        .then(response => response.json())
+        .then(data => {
+          const user = data.results[0];
+          userInfo = {
+            name: `${user.name.first} ${user.name.last}`,
+            photo: user.picture.large,
+            age: user.dob.age,
+            email: user.email,
+            phone: user.phone
+          };
+
+          // Update name and photo
+          nameElement.textContent = userInfo.name;
+          photoElement.src = userInfo.photo;
+
+          // Clear additional info
+          additionalInfoElement.textContent = '';
+        })
+        .catch(error => {
+          console.log('Error:', error);
+        });
+    }
+
+    // Attach event listener to getUserButton
+    getUserButton.addEventListener('click', fetchRandomUser);
+
+    // Initial fetch
+    fetchRandomUser();
+  </script>
 </body>
-
 </html>
